@@ -63,7 +63,7 @@ for (i in seq_len(nrow(all_weeks))) {
     )
     readme_txt <- readLines(tt_readme, warn = FALSE)[2]
     readme_title <- readme_txt |>
-      stringr::str_remove("</h1>") |>
+      stringr::str_remove("#") |>
       stringr::str_trim("both")
     all_weeks[i, "title"] <- readme_title
   } else {
@@ -71,10 +71,8 @@ for (i in seq_len(nrow(all_weeks))) {
       pattern = "\\.md|\\.MD", full.names = TRUE
     )
     readme_txt <- readLines(tt_readme, warn = FALSE)[1]
-    readme_title <- str_extract_between(
-      readme_txt,
-      start = ">", end = "<"
-    ) |>
+    readme_title <- readme_txt |>
+      stringr::str_remove("#") |>
       stringr::str_trim("both")
     all_weeks[i, "title"] <- readme_title
   }
