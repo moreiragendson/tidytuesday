@@ -1,4 +1,5 @@
-year,week,title,pkgs,code_fpath,img_fpath,code_type,janitor,readr,showtext,skimr,tidytuesdayR,tidyverse,treemapify
-2025,2025-09-23,FIDE Chess Player Ratings,"tidyverse, tidytuesdayR, showtext",2025/2025-09-23/20250923.R,2025/2025-09-23///20250923.png,R,0,0,1,0,1,1,0
-2025,2025-09-30,"Crane Observations at Lake Hornborgasjön, Sweden (1994–2024)","tidyverse, tidytuesdayR, showtext",2025/2025-09-30/20250930.R,2025/2025-09-30///20250930.png,R,0,0,1,0,1,1,0
-2025,2025-10-07,EuroLeague Basketball,"tidyverse, tidytuesdayR, showtext, skimr, treemapify, janitor, readr",2025/2025-10-07/20251007.R,2025/2025-10-07///20251007.png,R,1,1,1,1,1,1,1
+year,week,title,pkgs,code_fpath,img_fpath,code_type,ggtext,janitor,lubridate,readr,showtext,skimr,stringr,tidytuesdayR,tidyverse,treemapify
+2025,2025-09-23,FIDE Chess Player Ratings,"tidyverse, tidytuesdayR, showtext",2025/2025-09-23/20250923.R,2025/2025-09-23///20250923.png,R,0,0,0,0,1,0,0,1,1,0
+2025,2025-09-30,"Crane Observations at Lake Hornborgasjön, Sweden (1994–2024)","tidyverse, tidytuesdayR, showtext",2025/2025-09-30/20250930.R,2025/2025-09-30///20250930.png,R,0,0,0,0,1,0,0,1,1,0
+2025,2025-10-07,EuroLeague Basketball,"tidyverse, tidytuesdayR, showtext, skimr, treemapify, janitor, readr",2025/2025-10-07/20251007.R,2025/2025-10-07///20251007.png,R,0,1,0,1,1,1,0,1,1,1
+2025,2025-10-21,Historic UK Meteorological & Climate Data,"tidyverse, showtext, lubridate, ggtext, stringr, readr",2025/2025-10-21/20251021.R,2025/2025-10-21///20251021.png,R,1,0,1,1,1,0,1,0,1,0
