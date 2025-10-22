@@ -49,7 +49,7 @@ txt_font <- "lato"
 
 title_txt <- "Sunniest Month Revealed:\nMay Shines Brightest in Oxford"
 st_txt <- "This heatmap shows monthly sunshine totals for Oxford from 2000 to 2020.\nEach row represents a different year, and each column a month.\nThe colour intensity of each tile reflects the total hours of sunshine in that year and month."
-legend_txt <- "Sunshine hours by\nyear and month"
+legend_txt <- "sunshine\nhours"
 
 
 # Build chart ------------------------------------------------------------
@@ -110,19 +110,19 @@ p <- df |>
 
     # Legend styling
     legend.text = element_text(color = txt_color),
-    legend.title = element_text(color = txt_color, face = "bold"),
+    legend.title = element_text(color = txt_color, face = "bold", size = 12, vjust = 0.7),
     legend.position = "top",
-    legend.key.height = unit(0.4, "cm"),
+    legend.key.height = unit(0.7, "cm"),
     legend.key.width = unit(3, "cm"),
     legend.margin = margin(t = 15, b = 20),
 
     # Axis styling
-    axis.text.y = element_text(face = "bold", size = 14, color = txt_color),
+    axis.text.y = element_text(face = "bold", size = 16, color = txt_color),
     axis.text.x = element_text(face = "bold", size = 15, color = txt_color),
 
     # Title styling
     plot.title = element_textbox(
-      size = 20,
+      size = 24,
       face = "bold",
       color = txt_color,
       hjust = 0,
