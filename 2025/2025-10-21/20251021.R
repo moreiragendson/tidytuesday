@@ -153,5 +153,5 @@ ggsave(
   width = 11,
   height = 13,
   units = "in",
-  dpi = 600
+  dpi = 300
 )
