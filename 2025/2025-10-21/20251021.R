@@ -32,10 +32,11 @@ station_meta <- readr::read_csv('https://raw.githubusercontent.com/rfordatascien
 
 indicators <- c("tmax", "tmin", "af", "rain", "sun")
 
-df <- historic_station_met |> 
-  mutate(
-    date = make_date(year = year, month = month, day = 1)) |> 
-  pivot_longer(cols = all_of(indicators))
+df <- historic_station_met |>
+  pivot_longer(cols = all_of(indicators)) |>
+  filter(
+    station == "oxford" & !is.na(value) & name == "sun" & year %in% 2000:2020
+  )
 
 
 # Define colors and fonts ------------------------------------------------
@@ -47,7 +48,7 @@ txt_font <- "lato"
 
 # Define chart texts -----------------------------------------------------
 
-title_txt <- "Sunniest Month Revealed:\nMay Shines Brightest in Oxford"
+title_txt <- "The sun shines its brightest in Oxford between May and August"
 st_txt <- "This heatmap shows monthly sunshine totals for Oxford from 2000 to 2020.\nEach row represents a different year, and each column a month.\nThe colour intensity of each tile reflects the total hours of sunshine in that year and month."
 legend_txt <- "sunshine\nhours"
 
@@ -61,11 +62,6 @@ segment_data <- data.frame(
     )
 
 p <- df |>
-  filter(
-    station == "oxford" 
-      & !is.na(value) 
-      & name == "sun" 
-      & year %in% 2000:2020 ) |>
   ggplot() +
   geom_segment(
     data = segment_data,
@@ -110,9 +106,9 @@ p <- df |>
 
     # Legend styling
     legend.text = element_text(color = txt_color),
-    legend.title = element_text(color = txt_color, face = "bold", size = 12, vjust = 0.7),
+    legend.title = element_text(color = txt_color, face = "bold", size = 14, vjust = 0.7),
     legend.position = "top",
-    legend.key.height = unit(0.7, "cm"),
+    legend.key.height = unit(1.25, "cm"),
     legend.key.width = unit(3, "cm"),
     legend.margin = margin(t = 15, b = 20),
 
@@ -122,7 +118,7 @@ p <- df |>
 
     # Title styling
     plot.title = element_textbox(
-      size = 24,
+      size = 20,
       face = "bold",
       color = txt_color,
       hjust = 0,
