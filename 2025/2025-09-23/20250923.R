@@ -16,20 +16,14 @@ txt_color <- "#001219"
 bg_color <- "#ffffff"
 negative_color <- "#fdbf11"
 positive_color <- "#1696d2"
-txt_negative_color <- "#001219"
-txt_positive_color <- "#ffffff"
 txt_font <- "lato"
 
 # Load data --------------------------------------------------------------
 
-tuesdata <- tidytuesdayR::tt_load("2025-09-23")
-fide_ratings_august <- tuesdata$fide_ratings_august
-fide_ratings_september <- tuesdata$fide_ratings_september
-
 # Option 2: Read directly from GitHub
 
-# fide_ratings_august <- readr::read_csv('https://raw.githubusercontent.com/rfordatascience/tidytuesday/main/data/2025/2025-09-23/fide_ratings_august.csv')
-# fide_ratings_september <- readr::read_csv('https://raw.githubusercontent.com/rfordatascience/tidytuesday/main/data/2025/2025-09-23/fide_ratings_september.csv')
+fide_ratings_august <- readr::read_csv('https://raw.githubusercontent.com/rfordatascience/tidytuesday/main/data/2025/2025-09-23/fide_ratings_august.csv')
+fide_ratings_september <- readr::read_csv('https://raw.githubusercontent.com/rfordatascience/tidytuesday/main/data/2025/2025-09-23/fide_ratings_september.csv')
 
 # Explore data -----------------------------------------------------------
 
@@ -54,7 +48,9 @@ fide_joined <- inner_join(fide_ratings_september,
                          by = c("id", "name"), 
                          suffix = c("_sept", "_aug"))
 
-# Plot data --------------------------------------------------------------
+
+# Prepare data -----------------------------------------------------------
+
 
 offset <- 10
 
@@ -72,19 +68,30 @@ fide_top20 <- fide_joined %>%
     mover_type = ifelse(rank_diff > 0, "Winner", "Loser"),
     bar_label = ifelse(
       mover_type == "Winner",
-      paste0(name, " (", fed_sept, ") advanced ", rank_diff, " positions"),
-      paste0(name, " (", fed_sept, ") fell ", abs(rank_diff), " positions")
+      paste0(name, " (", fed_sept, ")"),
+      paste0(name, " (", fed_sept, ")")
     ),
-    text_color = ifelse(mover_type == "Winner", txt_positive_color, txt_negative_color),
     label_y = ifelse(mover_type == "Winner", offset, -offset)  # offset from zero
   )
 
 
-p <- ggplot(fide_top20, aes(x = reorder(name, abs(rank_diff)), y = rank_diff, fill = mover_type)) +
+# Build chart ------------------------------------------------------------
+
+
+
+p <- ggplot(fide_top20, aes(x = reorder(name, rank_diff), y = rank_diff, fill = mover_type)) +
   geom_col() +
-  geom_text(aes(y = label_y, label = bar_label, color = text_color),
-            hjust = ifelse(fide_top20$mover_type == "Winner", 0, 1),
-            size = 4, family = "lato", fontface = "bold") +
+  geom_text(
+    aes(
+      y = ifelse(mover_type == "Winner", 0, 0),
+      label = bar_label,
+      color = txt_color,
+      hjust = ifelse(mover_type == "Winner", 1.05, -0.05)
+    ),
+    size = 3,
+    family = "lato",
+    fontface = "bold"
+  ) +
   coord_flip() +
   scale_fill_manual(values = c("Winner" = positive_color, "Loser" = negative_color)) +
   scale_color_identity() +
@@ -100,13 +107,18 @@ p <- ggplot(fide_top20, aes(x = reorder(name, abs(rank_diff)), y = rank_diff, fi
     axis.title.x = element_blank(),
     axis.title.y = element_blank(),
     axis.ticks = element_blank(),
-    plot.title = element_text(size = 20),
-    plot.subtitle = element_text(size = 16),
+    plot.title = element_text(size = 20, face = "bold"),
+    plot.subtitle = element_text(size = 12, face = "italic"),
     rect  = element_blank(),
     panel.grid = element_blank()
   )
 
 p
+
+
+# Save chart -------------------------------------------------------------
+
+
 
 ggsave(
   filename = "2025/2025-09-23/20250923.png",
