@@ -6,6 +6,8 @@ library(showtext)
 library(skimr)
 library(treemapify)
 library(janitor)
+library(ggtext)
+library(marquee)
 
 
 # Load data --------------------------------------------------------------
@@ -36,10 +38,46 @@ st_font_size <- 12
 
 # Chart texts ------------------------------------------------------------
 
-title_txt <- "Where the Titles Live"
-st_txt <- "EuroLeague Basketball Wins by Country and City"
-caption_txt <- "\nData: EuroleagueBasketball R package (curated from Wikipedia and EuroLeague records)"
+title_txt <- "**Where the Titles Live**"
+st_txt <- "*EuroLeague Basketball Wins by Country and City*"
+caption_txt <- "
+**Data**: TidyTuesday 2025 W40
+<br>
+**Graphic**: Gendson Moreira
+"
 
+
+
+# Set theme --------------------------------------------------------------
+
+
+t <- theme_minimal(base_family = txt_font) +
+  theme(
+    plot.title = marquee::element_marquee(
+      size = 16,
+      color = txt_color
+    ),
+
+    plot.subtitle = element_textbox_simple(
+      size = 12,
+      color = txt_color,
+      lineheight = 1.25,
+      padding = margin(0, 0, 0, 0),
+      margin = margin(0, 0, 10, 0)
+    ),
+
+    plot.caption = element_textbox_simple(
+      color = txt_color,
+      size = 10,
+      padding = margin(10, 0, 5, 0),
+      margin = margin(10, 0, 5, 0)
+    ),
+    legend.position = "none",
+    panel.background = element_rect(fill = bg_color),
+    title = element_text(face = "bold", size = title_font_size)
+  )
+
+set_theme(t)
 
 # Chart ------------------------------------------------------------------
 
@@ -62,14 +100,8 @@ plt <- euroleague_basketball |>
     title = title_txt,
     subtitle = st_txt,
     caption = caption_txt
-  )+
-  theme_bw(base_family = txt_font) +
-  theme(
-    legend.position = "none",
-    panel.background = element_rect(fill = bg_color),
-    title = element_text(face = "bold", size = title_font_size),
-    plot.subtitle = element_text(face = "italic", size = st_font_size)
   )
+
 
 plt
 
