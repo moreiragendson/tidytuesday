@@ -3,17 +3,14 @@
 
 
 library(tidyverse)
-library(tidytuesdayR)
 library(showtext)
+
 
 # Load data --------------------------------------------------------------
 
-tuesdata <- tidytuesdayR::tt_load("2025-09-30")
-cranes <- tuesdata$cranes
-
 # Option 2: Read directly from GitHub
 
-# cranes <- readr::read_csv('https://raw.githubusercontent.com/rfordatascience/tidytuesday/main/data/2025/2025-09-30/cranes.csv')
+cranes <- readr::read_csv('https://raw.githubusercontent.com/rfordatascience/tidytuesday/main/data/2025/2025-09-30/cranes.csv')
 
 
 # Load fonts -------------------------------------------------------------
@@ -60,15 +57,65 @@ max_year <- grouped_data |> pull(year) |> max()
 max_count <- grouped_data |> pull(count) |> max()
 
 
-# Set texts --------------------------------------------------------------
+# Define chart texts -----------------------------------------------------
 
 
-title_txt <- "Crane Observations at Lake Hornborgasjön, Sweden (1994–2024)"
-st_txt <- "For more than 30 years, cranes stopping at the Lake Hornborgasjön ('Lake Hornborga') in Västergötland, Sweden have been \ncounted from the Hornborgasjön field station in the spring and the fall as they pass by during their yearly migration.\nIn 2019, more than 500 thousands cranes stopped at the Lake Hornborgasjön."
-caption_txt <- "\nData: Transtatistik ('crane statistics'), Naturum, Hornborgasjön, Västra Götaland County Administrative Board"
+title_txt <- "**Crane Observations at Lake Hornborgasjön, Sweden (1994–2024)**"
+st_txt <- "
+For more than 30 years, cranes stopping at the Lake Hornborgasjön ('Lake Hornborga') in Västergötland, Sweden have been counted from the Hornborgasjön field station in the spring and the fall as they pass by during their yearly migration.
+<br>
+In 2019, more than 500 thousands cranes stopped at the Lake Hornborgasjön.
+"
+
+caption_txt <- "
+**Data**: TidyTuesday 2025 W39 
+<br>
+**Graphic**: Gendson Moreira
+"
 
 
-# Chart ------------------------------------------------------------------
+# Set theme --------------------------------------------------------------
+
+t <- theme_minimal(base_family = txt_font) +
+  theme(
+    plot.title = marquee::element_marquee(
+      size = 16,
+      color = txt_color
+    ),
+
+    plot.subtitle = element_textbox_simple(
+      size = 12,
+      color = txt_color,
+      lineheight = 1.25,
+      padding = margin(5, 0, 5, 0),
+      margin = margin(5, 0, 5, 0)
+    ),
+
+    plot.caption = element_textbox_simple(
+      color = txt_color,
+      size = 10,
+      padding = margin(10, 0, 5, 0),
+      margin = margin(10, 0, 5, 0)
+    ),
+    plot.background = element_rect(fill = bg_color),
+    axis.text.x = element_text(
+      family = txt_font,
+      face = "bold",
+      color = txt_color
+    ),
+    legend.position = "none",
+    panel.grid = element_blank(),
+    axis.text.y = element_blank(),
+    axis.title = element_blank()
+  )
+
+
+set_theme(t)
+
+
+# Build chart ------------------------------------------------------------
+
+
 
 final_plt <- grouped_data |>
   ggplot() +
@@ -76,32 +123,19 @@ final_plt <- grouped_data |>
   scale_x_continuous(breaks = seq(min_year, max_year, 5)) +
   scale_fill_manual(values = c("Spring" = color_one, "Fall" = color_two, "Other" = color_three))+
   scale_y_continuous(limits = c(0,6e5))+
-  theme_minimal(base_family = txt_font) +
   labs(
     title = title_txt,
     subtitle = st_txt,
     caption = caption_txt
-  ) +
-  theme(
-    plot.title = element_text(face = "bold", color = txt_color, size = title_font_size),
-    plot.subtitle = element_text(face = "italic", color = txt_color, size = st_font_size),
-    plot.caption = element_text(color = txt_color),
-    plot.caption.position = "plot",
-    legend.position = "top",
-    legend.text = element_text(color = txt_color),
-    legend.title = element_blank(),
-    plot.background = element_rect(fill = bg_color),
-    axis.text.x = element_text(
-      family = txt_font,
-      face = "bold",
-      color = txt_color
-    ),
-    panel.grid = element_blank(),
-    axis.text.y = element_blank(),
-    axis.title = element_blank()
   )
+  
 
 final_plt
+
+
+# Save chart -------------------------------------------------------------
+
+
 
 ggsave(
   filename = "2025/2025-09-30/20250930.png",
