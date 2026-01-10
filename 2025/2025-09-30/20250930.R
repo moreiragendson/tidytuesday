@@ -4,6 +4,8 @@
 
 library(tidyverse)
 library(showtext)
+library(ggtext)
+library(marquee)
 
 
 # Load data --------------------------------------------------------------
@@ -78,7 +80,7 @@ caption_txt <- "
 
 t <- theme_minimal(base_family = txt_font) +
   theme(
-    plot.title = marquee::element_marquee(
+      plot.title = marquee::element_marquee(
       size = 16,
       color = txt_color
     ),
