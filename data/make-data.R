@@ -41,7 +41,7 @@ all_weeks <- all_folders |>
     too_few = "align_start",
     too_many = "drop"
   ) |>
-  filter(year %in% c(2025)) |>
+  filter(year %in% c(2025, 2026)) |>
   drop_na(week) |>
   mutate(
     title = NA_character_,
