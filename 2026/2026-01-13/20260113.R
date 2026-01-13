@@ -42,8 +42,10 @@ africa_sf <- world |>
   select(country = name, subregion) |> 
   mutate(
     country = case_when(
-      country == "Democratic Republic of the Congo" ~ "Congo",
+      country %in% c("Democratic Republic of the Congo", "Republic of Congo")  ~ "Congo",
       country == "Cote d'Ivoire" ~ "Ivory Coast",
+      country ==  "The Gambia" ~ "Gambia",
+      country == "Guinea-Bissau" ~ "Guinea",
       TRUE ~ country
     )) |> 
   st_transform("ESRI:102022") |> 
@@ -51,7 +53,7 @@ africa_sf <- world |>
   st_collection_extract("POLYGON")
 
 africa_joined <- africa |> 
-  left_join(africa_sf, join_by(country == country))
+  right_join(africa_sf, join_by(country == country))
 
 
 # Define colors and fonts ------------------------------------------------
@@ -60,8 +62,10 @@ txt_color <- "#f2f2f2"
 bg_color <- "#000000"
 txt_font <- "lato"
 
+pal1 <- c("#FFF2CF","#FCE39E","#FDD870","#FCCB41","#FDBF11","#E88E2D","#CA5800","#843215")
+pal2 <- c("#CFE8F3","#A2D4EC","#73BFE2","#46ABDB","#1696D2","#12719E","#0A4C6A","#062635")
 
-var_colors <- c("#FFF2CF","#FCE39E","#FDD870","#FCCB41","#FDBF11","#E88E2D","#CA5800","#843215")
+var_colors <- c(rev(pal1), pal2)
 
 # Define chart texts -----------------------------------------------------
 
@@ -117,13 +121,15 @@ ggplot2::set_theme(t)
 # Build chart ------------------------------------------------------------
 
 p <- ggplot() +
-  geom_sf(data = africa_sf) +
-  geom_sf(data = africa_joined, aes(fill = one, geometry = geom)) +
+  geom_sf(
+    data = africa_joined,
+    aes(fill = one, geometry = geom, label = country),
+    na.rm = TRUE) +
   scale_fill_gradientn(
     colours = var_colors,
     limits = c(0, 100),
     breaks = seq(0, 100, by = 25),
-    # na.value = bg_color
+    na.value = bg_color
   ) +
   labs(
     title = title_txt,
@@ -132,6 +138,7 @@ p <- ggplot() +
   )
 
 p
+
 
 # Save chart -------------------------------------------------------------
 
