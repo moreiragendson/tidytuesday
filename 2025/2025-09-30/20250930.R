@@ -105,7 +105,8 @@ t <- theme_minimal(base_family = txt_font) +
       face = "bold",
       color = txt_color
     ),
-    legend.position = "none",
+    legend.position = "top",
+    legend.title = element_blank(),
     panel.grid = element_blank(),
     axis.text.y = element_blank(),
     axis.title = element_blank()
