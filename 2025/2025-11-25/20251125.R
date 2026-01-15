@@ -40,9 +40,10 @@ pivoted_data <- spi_indicators |>
     is_brazil = ifelse(country=="Brazil", TRUE, FALSE),
     score = round(score, 0),
     label_position = case_when(
-      year == min(year) ~ year - 1/2,
-      year == max(year) ~ year + 1/2,
-    TRUE ~ year))
+      year == min(year) ~ year - 1/5,
+      year == max(year) ~ year + 1/5,
+    TRUE ~ year)) |> 
+  filter(metric == "Overall")
 
 
 brazil_data <- pivoted_data |> filter(is_brazil == TRUE)
@@ -67,7 +68,7 @@ txt_font <- "lato"
 # Define texts -----------------------------------------------------------
 
 title_txt <- "
-**<span style='color:#55b748;'>Brazil's</span> Statistical Performance Indicators: Progress and Setbacks (2016–2023)**
+**Overall Brazil's Statistical Performance Indicators (2016–2023)**
 "
 
 st_txt <- "
@@ -105,19 +106,14 @@ t <- theme_minimal(base_family = txt_font) +
       color = txt_color,
       size = 12,
       lineheight = 1.3,
-      padding = margin(3, 3, 0, 0),
-      margin = margin(3, 3, 0, 0)
+      padding = margin(7, 0, 3, 0),
+      margin = margin(7, 0, 3, 0)
     ),
 
     # Axis
     axis.title.x = element_blank(),
     axis.title.y = element_blank(),
     axis.text.y = element_blank(),
-    axis.text.x = element_blank(),
-
-    # Facet
-    strip.text = element_text(face = "bold", size = 12),
-    strip.background = element_rect(fill = other_color, color = NA),
 
     # Panel
     panel.grid = element_blank(),
@@ -139,7 +135,8 @@ p <- ggplot() +
   geom_line(
     data = brazil_data,
     aes(x = year, y = score, group = country),
-    color = brazil_color
+    color = brazil_color,
+    size = 1
   ) + 
   geom_point(
     data = brazil_lim_data,
@@ -153,12 +150,10 @@ p <- ggplot() +
     aes(x = label_position, y = score, group = country, label = score),
     color = brazil_color
   ) +
-  # scale_y_reverse() +
   scale_x_continuous(
     breaks = year_seq <- seq(min(pivoted_data$year), max(pivoted_data$year), 1),
     labels = year_seq
   ) +
-  facet_wrap(~metric, ncol = 3) +
   labs(
     title = title_txt,
     subtitle = st_txt,
@@ -184,8 +179,8 @@ ggsave(
   filename = plt_file_name,
   plot = p,
   device = "png",
-  width = 12,
-  height = 8,
+  width = 10,
+  height = 6,
   units = "in",
   dpi = 600      # Use 300 to 600 for maximum quality/print
 )
