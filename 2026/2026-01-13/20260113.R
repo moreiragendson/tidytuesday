@@ -126,7 +126,7 @@ p <- ggplot() +
     aes(fill = one, geometry = geom, label = country),
     na.rm = TRUE) +
   scale_fill_gradientn(
-    colours = var_colors,
+    colours = pal2,
     limits = c(0, 100),
     breaks = seq(0, 100, by = 25),
     na.value = bg_color
