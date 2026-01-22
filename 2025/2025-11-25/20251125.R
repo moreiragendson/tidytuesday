@@ -68,7 +68,7 @@ txt_font <- "lato"
 # Define texts -----------------------------------------------------------
 
 title_txt <- "
-**Overall Brazil's Statistical Performance Indicators (2016–2023)**
+**Overall Statistical Performance Indicators for <span style='color:#55b748;'>Brazil</span> (2016–2023)**
 "
 
 st_txt <- "
