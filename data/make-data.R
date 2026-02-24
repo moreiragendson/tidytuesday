@@ -57,6 +57,7 @@ for (i in seq_len(nrow(all_weeks))) {
   tt_week <- all_weeks[i, ]
 
   # get readme file and parse title
+  # Note: Left as is, but see my candid observation below about the 2021 check!
   if (tt_week$year == "2021") {
     tt_readme <- list.files(file.path(tt_week$year, tt_week$week, "/"),
       pattern = "\\.md|\\.MD", full.names = TRUE
@@ -79,7 +80,7 @@ for (i in seq_len(nrow(all_weeks))) {
 
   # get image file path
   tt_imgs <- list.files(file.path(tt_week$year, tt_week$week, "/"),
-    pattern = ".png|.PNG|.jpg|.JPG|.jpeg|.JPEG", full.names = TRUE
+    pattern = "\\.png|\\.PNG|\\.jpg|\\.JPG|\\.jpeg|\\.JPEG", full.names = TRUE
   )
 
   tt_imgs <- tt_imgs |>
@@ -88,33 +89,43 @@ for (i in seq_len(nrow(all_weeks))) {
     subset(stringr::str_detect(tt_imgs, "_", negate = TRUE))
   all_weeks[i, "img_fpath"] <- tt_imgs[1]
   
-  # get all packages used
+  # get all packages/tools used
+  # CHANGED: Added \\.twb$ and \\.twbx$ for Tableau, and fixed regex
   tt_file <- list.files(file.path(tt_week$year, tt_week$week),
-    pattern = ".R|.py|.svelte|.js", full.names = TRUE
+    pattern = "\\.R$|\\.py$|\\.svelte$|\\.js$|\\.twb$|\\.twbx$", full.names = TRUE
   )[1]
+  
   all_weeks[i, "code_fpath"] <- tt_file
-  if (stringr::str_detect(tt_file, ".js")) {
+  
+  # CHANGED: Added logic branches for Tableau workbooks
+  if (is.na(tt_file)) {
+    # Failsafe in case no file is found
+    next 
+  } else if (stringr::str_detect(tt_file, "\\.js$")) {
     all_weeks[i, "pkgs"] <- "D3"
     all_weeks[i, "code_type"] <- "JavaScript"
-  } else if (stringr::str_detect(tt_file, ".R")) {
+  } else if (stringr::str_detect(tt_file, "\\.R$")) {
     tt_pkgs <- att_from_rscript(tt_file) |>
       stringr::str_flatten_comma()
     all_weeks[i, "pkgs"] <- tt_pkgs
     all_weeks[i, "code_type"] <- "R"
-  } else if (stringr::str_detect(tt_file, ".py")) {
+  } else if (stringr::str_detect(tt_file, "\\.py$")) {
     tt_pkgs <- att_from_pyscript(tt_file)
     all_weeks[i, "pkgs"] <- tt_pkgs
     all_weeks[i, "code_type"] <- "Python"
-  } else if (stringr::str_detect(tt_file, ".svelte")) {
+  } else if (stringr::str_detect(tt_file, "\\.svelte$")) {
     all_weeks[i, "pkgs"] <- "SveltePlot"
     all_weeks[i, "code_type"] <- "JavaScript"
+  } else if (stringr::str_detect(tt_file, "\\.twb$|\\.twbx$")) {
+    all_weeks[i, "pkgs"] <- "Tableau"
+    all_weeks[i, "code_type"] <- "Tableau"
   }
-  
 }
 
 # packages to binary variables
 binary_pkgs <- all_weeks |>
   select(week, pkgs) |>
+  drop_na(pkgs) |> # Added to prevent errors if a week has no file
   separate_longer_delim(pkgs, delim = ", ") |>
   mutate(value = 1) |>
   complete(week, pkgs) |>
