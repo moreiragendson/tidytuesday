@@ -153,6 +153,7 @@ p <- ggplot(ocean_temperature_clean,
   geom_jitter(height = 0.2, width = 0, alpha = 0.2, size = 0.3) +
   scale_color_manual(values = custom_pal) +
   scale_y_discrete(limits = rev) + 
+  coord_flip() + 
   stat_summary(
     fun = median,
     fun.min = median,
@@ -168,7 +169,7 @@ p <- ggplot(ocean_temperature_clean,
     caption = caption_txt
   )
 
-fig <- p + ggview::canvas(width = 4, height = 5)
+fig <- p + ggview::canvas(width = 6, height = 5)
 fig
 
 # Define filenames -------------------------------------------------------
