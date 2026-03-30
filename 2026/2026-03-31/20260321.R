@@ -152,7 +152,7 @@ p <- ggplot(ocean_temperature_clean,
        aes(x = mean_temperature_degree_c, y = month, color = season)) +
   geom_jitter(height = 0.2, width = 0, alpha = 0.2, size = 0.3) +
   scale_color_manual(values = custom_pal) +
-  scale_y_discrete(limits = rev) + 
+  scale_y_discrete() + 
   coord_flip() + 
   stat_summary(
     fun = median,
