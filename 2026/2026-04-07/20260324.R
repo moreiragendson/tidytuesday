@@ -18,7 +18,7 @@ repairs <- readr::read_csv(
 # Data wrangling ---------------------------------------------------------
 
 
-repairs_summary <- repairs |> 
+repairs_summary <- repairs |>
   mutate(
     continent = countrycode(
       country,
@@ -30,11 +30,23 @@ repairs_summary <- repairs |>
       str_detect(str_to_lower(repaired), "ja") ~ as.character(NA),
       is.na(repaired) ~ as.character(NA),
       TRUE ~ repaired
+    ),
+
+    year = lubridate::year(repair_date),
+
+    year_group = case_when(
+      year %in% 2017:2019 ~ "2017–2019",
+      year %in% 2020:2022 ~ "2020–2022",
+      year %in% 2023:2025 ~ "2023–2025",
+      TRUE ~ NA_character_
     )
-  ) |> 
-  filter(!is.na(continent), !is.na(is_repaired)) |> 
-  count(continent, is_repaired) |> 
-  mutate(thousands = round(n/1e3)) |> 
+  ) |>
+  filter(continent == "Europe", !is.na(is_repaired), !is.na(year_group)) |>
+  count(year_group, is_repaired) |>
+  mutate(
+    thousands = round(n/1e3),
+    year_group = factor(year_group, levels = c("2017–2019", "2020–2022", "2023–2025"))
+  ) |>
   filter(thousands >= 1)
 
 
@@ -61,10 +73,10 @@ custom_pal <- c(
 
 # Define chart texts -----------------------------------------------------
 
-title_txt <- "**A World Trying to Fix Things**"
+title_txt <- "**Europe's Repair Movement**"
 
 st_txt <- stringr::str_c(
-  "Since 2015, Repair Monitor has tracked every item brought to volunteer-run Repair Cafes across the globe. Each square = 1K items, colored by outcome. Africa excluded (< 1,000 total records).",
+  "Repair Monitor has tracked every item brought to volunteer-run Repair Cafes across Europe, grouped in three-year periods. Each square = 1K items, colored by outcome.",
   "<br><br>",
   "<span style='color:",
   yes,
@@ -80,7 +92,7 @@ st_txt <- stringr::str_c(
 caption_txt <- "
 TidyTuesday 2026 Week 14 &mdash; Repair Cafes Worldwide
 <br>
-Created by Gendson Moreira
+Viz & Design: Gendson Moreira
 "
 
 # Set theme --------------------------------------------------------------
@@ -142,9 +154,9 @@ plt <- ggplot(repairs_summary, aes(values = thousands, fill = is_repaired))+
     size = 0.25
   ) + 
   facet_wrap(
-    ~ fct_reorder(continent, thousands, .fun = sum, .desc = TRUE),
-     nrow = 1,
-    strip.position = "bottom") + 
+    ~ year_group,
+    nrow = 1,
+    strip.position = "bottom") +
   scale_fill_manual(values = custom_pal) +
   labs(
     title = title_txt,
@@ -152,7 +164,7 @@ plt <- ggplot(repairs_summary, aes(values = thousands, fill = is_repaired))+
     caption = caption_txt
   )
 
-fig <- plt + ggview::canvas(width = 4.1, height = 3.5)
+fig <- plt + ggview::canvas(width = 4, height = 3)
 fig
 
 
