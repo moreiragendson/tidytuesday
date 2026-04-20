@@ -19,15 +19,10 @@ source(here::here("2026/2026-04-21/rescale_number.R"))
 
 # Load data --------------------------------------------------------------
 
-financing_schemes <- readr::read_csv(
-  'https://raw.githubusercontent.com/rfordatascience/tidytuesday/main/data/2026/2026-04-21/financing_schemes.csv'
-)
-health_spending <- readr::read_csv(
-  'https://raw.githubusercontent.com/rfordatascience/tidytuesday/main/data/2026/2026-04-21/health_spending.csv'
-)
-spending_purpose <- readr::read_csv(
-  'https://raw.githubusercontent.com/rfordatascience/tidytuesday/main/data/2026/2026-04-21/spending_purpose.csv'
-)
+
+financing_schemes <- readr::read_csv('https://raw.githubusercontent.com/rfordatascience/tidytuesday/main/data/2026/2026-04-21/financing_schemes.csv')
+health_spending <- readr::read_csv('https://raw.githubusercontent.com/rfordatascience/tidytuesday/main/data/2026/2026-04-21/health_spending.csv')
+spending_purpose <- readr::read_csv('https://raw.githubusercontent.com/rfordatascience/tidytuesday/main/data/2026/2026-04-21/spending_purpose.csv')
 
 
 # Define colors and fonts ------------------------------------------------
@@ -46,7 +41,7 @@ txt_color <- "#ffffff"
 bg_color <- "#062635"
 
 custom_pal <- c(
-  "country_value" = country_col <- "#fdbf11",
+  "country_value" = country_col <- "#d2d2d2",
   "rest_of_the_region" = region_col <- "#0a4c6a"
 )
 
@@ -104,8 +99,8 @@ plot_data <- country_data |>
       value_fmt_suffix == "B"      ~ str_c(sprintf("%.2f", value_fmt), value_fmt_suffix),
       TRUE                         ~ str_c(round(value_fmt), value_fmt_suffix)
     ),
-    text_position_x = region_value + 5e9,
-    country_name_position = ifelse(hierarchy == "country_value", region_value - value - 1e9, as.numeric(NA))
+    text_position_x = region_value + 3e9,
+    country_name_position = ifelse(hierarchy == "country_value", region_value - value - 3e8, as.numeric(NA))
   )
 
 
@@ -122,9 +117,9 @@ st_txt <- glue(
 
 caption_txt <- glue(
   "TidyTuesday 2026 Week 16 &mdash; Global Health Spending",
-  "<br>",
+  " · ",
   "Data: WHO Global Health Expenditure Database (GHED)",
-  "<br>",
+  " · ",
   "Viz & Design: Gendson Moreira"
 )
 
@@ -142,23 +137,23 @@ base_theme <- theme_minimal(base_family = body_font, base_size = 8) +
     plot.title.position = "plot",
     plot.caption.position = "plot",
     plot.title = ggtext::element_textbox_simple(
-      size = rel(1.5),
+      size = rel(0.7),
       family = title_font,
       hjust = -2,
       margin = margin(t = 5, unit = "pt")
     ),
     plot.subtitle = ggtext::element_textbox_simple(
-      size = rel(1.2),
-      margin = margin(t = 10, b = 10, unit = "pt")
+      size = rel(0.7),
+      margin = margin(t = 3, b = 5, unit = "pt")
     ),
     plot.caption = ggtext::element_textbox_simple(
-      size = rel(0.9),
+      size = rel(0.55),
       halign = 0.5,
-      margin = margin(t = 10,b = 2, unit = "pt")
+      margin = margin(t = 5,b = 5, unit = "pt")
     ),
 
     # Margin
-    plot.margin = margin(t = 10, r = 10, b = 10, l = 15, unit = "pt"),
+    plot.margin = margin(t = 10, r = 10, b = 5, l = 15, unit = "pt"),
 
     # Grid
     panel.grid = element_blank(),
@@ -181,11 +176,11 @@ region_data |>
 plt <- ggplot(plot_data, aes(x = value, y = reorder(country_name, value * (hierarchy == "country_value")),
     fill = hierarchy)) +
   geom_col() +
-  geom_text(aes(x = text_position_x, label = label), hjust = 0.5, color = country_col, fontface = "bold") +
+  geom_text(aes(x = text_position_x, label = label), hjust = 0.5, , size = rel(1.5), color = country_col, fontface = "bold") +
   geom_text(
     aes(x = country_name_position,
       label = country_name),
-    hjust = 0, color = country_col, fontface = "bold") +
+    hjust = 0, size = rel(1.5), color = country_col, fontface = "bold") +
   scale_fill_manual(values = custom_pal) + 
   scale_x_reverse() +
   labs(
@@ -194,7 +189,7 @@ plt <- ggplot(plot_data, aes(x = value, y = reorder(country_name, value * (hiera
     caption = caption_txt
   )
 
-fig <- plt + ggview::canvas(width = 5.5, height = 10)
+fig <- plt + ggview::canvas(width = 4, height = 4)
 fig
 
 
