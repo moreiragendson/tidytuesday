@@ -1,15 +1,15 @@
 # Import libraries --------------------------------------------------------
-
-import re
 import pathlib
-import requests
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
-import matplotlib.font_manager as fm
 import matplotlib.patches as mpatches
 
 # Colors & fonts ----------------------------------------------------------
+
+import sys as _sys
+_sys.path.insert(0, str(pathlib.Path(__file__).parent.parent.parent))
+from scripts.download_fonts import register_fonts
 
 txt_color  = "#062635"
 bg_color   = "#ffffff"
@@ -34,26 +34,7 @@ CHAPTER_NAMES = {
     22:"Beverages",     23:"Animal feed",    24:"Tobacco",
 }
 
-_FONTS_DIR = pathlib.Path(__file__).parent / "fonts"
-_FONTS_DIR.mkdir(exist_ok=True)
-
-def _load_google_font(family, weight=400):
-    tag = f"{family.replace(' ', '_')}_{weight}"
-    fp = _FONTS_DIR / f"{tag}.ttf"
-    if not fp.exists():
-        css = requests.get(
-            f"https://fonts.googleapis.com/css?family={family.replace(' ', '+')}:{weight}",
-            headers={"User-Agent": "Mozilla/4.0"}, timeout=10,
-        ).text
-        m = re.search(r"url\((https://fonts\.gstatic\.com[^)]+)\)", css)
-        if m:
-            fp.write_bytes(requests.get(m.group(1), timeout=10).content)
-    if fp.exists():
-        fm.fontManager.addfont(str(fp))
-
-for _family in ["Fira Sans", "Source Sans 3"]:
-    _load_google_font(_family)
-_load_google_font("Fira Sans", weight=700)
+register_fonts()
 
 title_font = "Fira Sans"
 body_font  = "Source Sans 3 ExtraLight"
