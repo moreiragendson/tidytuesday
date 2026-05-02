@@ -22,6 +22,7 @@ att_from_pyscript <- function(file) {
       output[i] <- stringr::str_extract(import_lines[i], "(?<=from )(\\w+)")
     }
   }
+  output <- output[nchar(output) > 0]
   output <- stringr::str_flatten_comma(output)
   return(output)
 }
